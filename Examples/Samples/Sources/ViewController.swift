@@ -446,7 +446,7 @@ extension SampleListViewController: FloatingPanelControllerDelegate {
             }
             fallthrough
         case .showContentInset:
-            return NoInteractionBufferPanelLayout()
+            return FloatingPanelBottomLayout()
         default:
             return (newCollection.verticalSizeClass == .compact) ? FloatingPanelBottomLayout() : self
         }
@@ -527,12 +527,6 @@ class BottomEdgeInteractionLayout: FloatingPanelLayout {
             .tip: FloatingPanelLayoutAnchor(absoluteInset: 44.0, edge: .top, referenceGuide: .safeArea)
         ]
     }
-    func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        switch edge {
-        case .top: return 200.0
-        case .bottom: return 261.0 - 22.0
-        }
-    }
 }
 
 class IntrinsicPanelLayout: FloatingPanelBottomLayout {
@@ -541,13 +535,6 @@ class IntrinsicPanelLayout: FloatingPanelBottomLayout {
         return [
             .full: FloatingPanelIntrinsicLayoutAnchor(fractionalOffset: 0.0, referenceGuide: .safeArea)
         ]
-    }
-}
-
-class NoInteractionBufferPanelLayout: FloatingPanelDefaultLayout {
-    override var initialState: FloatingPanelState { .full }
-    override func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        return 0.0
     }
 }
 
@@ -560,13 +547,6 @@ class RemovablePanelLayout: FloatingPanelLayout {
             .full: FloatingPanelIntrinsicLayoutAnchor(fractionalOffset: 0.0, referenceGuide: .safeArea),
             .half: FloatingPanelLayoutAnchor(absoluteInset: 130.0, edge: .bottom, referenceGuide: .safeArea)
         ]
-    }
-
-    func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        switch edge {
-        case .top: return 200.0
-        case .bottom: return 261.0 - 22.0
-        }
     }
 
     func backdropAlphaFor(position: FloatingPanelState) -> CGFloat {
@@ -585,13 +565,6 @@ class RemovablePanelLandscapeLayout: FloatingPanelLayout {
         ]
     }
 
-    func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        switch edge {
-        case .top: return 6.0
-        case .bottom: return 261.0 - 22.0
-        }
-    }
-
     func backdropAlphaFor(position: FloatingPanelState) -> CGFloat {
         return 0.3
     }
@@ -605,13 +578,6 @@ class ModalPanelLayout: FloatingPanelLayout {
         return [
             .full: FloatingPanelIntrinsicLayoutAnchor(absoluteOffset: 0.0, referenceGuide: .safeArea),
         ]
-    }
-
-    func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        switch edge {
-        case .top: return 100.0
-        case .bottom: return 6.0
-        }
     }
 
     func backdropAlphaFor(position: FloatingPanelState) -> CGFloat {
@@ -1186,13 +1152,6 @@ class TwoTabBarPanelLayout: FloatingPanelLayout {
             .half: FloatingPanelLayoutAnchor(absoluteInset: 261.0, edge: .bottom, referenceGuide: .safeArea)
         ]
     }
-
-    func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        switch edge {
-        case .top: return 100.0
-        case .bottom: return 261.0 - 22.0
-        }
-    }
 }
 
 class TwoTabBarPanelBehavior: FloatingPanelBehavior {
@@ -1223,13 +1182,6 @@ class ThreeTabBarPanelLayout: FloatingPanelLayout {
             .half: FloatingPanelLayoutAnchor(absoluteInset: 261.0 + parentVC.layoutInsets.bottom, edge: .bottom, referenceGuide: .superview),
             .tip: FloatingPanelLayoutAnchor(absoluteInset: 88.0 + parentVC.layoutInsets.bottom, edge: .bottom, referenceGuide: .superview),
         ]
-    }
-
-    func interactionBuffer(for edge: FloatingPanelPosition) -> CGFloat {
-        switch edge {
-        case .top: return 6.0
-        case .bottom: return 44.0
-        }
     }
 
     func backdropAlphaFor(position: FloatingPanelState) -> CGFloat {
