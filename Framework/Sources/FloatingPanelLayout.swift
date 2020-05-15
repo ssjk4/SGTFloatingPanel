@@ -604,6 +604,7 @@ class FloatingPanelLayoutAdapter {
         heightConstraint = nil
 
         if vc.contentMode == .fitToBounds {
+            surfaceView.containerOverflow = 0
             return
         }
 
