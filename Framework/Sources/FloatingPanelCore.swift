@@ -521,7 +521,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
             return false
         }
 
-        let offset = value(of: scrollView.contentOffset - contentOrigin(of: scrollView))
+        let offset = value(of: scrollView.contentOffset - contentOffsetForPinning(of: scrollView))
         // The zero offset must be excluded because the offset is usually zero
         // after a panel moves from half/tip to full.
         switch layoutAdapter.layout.anchorPosition {
@@ -715,8 +715,8 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
             if grabberAreaFrame.contains(location) {
                 initialScrollOffset = scrollView.contentOffset
             } else {
-                initialScrollOffset = contentOrigin(of: scrollView)
-                let offsetDiff = scrollView.contentOffset - contentOrigin(of: scrollView)
+                initialScrollOffset = contentOffsetForPinning(of: scrollView)
+                let offsetDiff = scrollView.contentOffset - contentOffsetForPinning(of: scrollView)
                 switch layoutAdapter.layout.anchorPosition {
                 case .top/*, .left */:
                     // Fit the surface bounds to a scroll offset content by startInteraction(at:offset:)
@@ -938,7 +938,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
         scrollView?.setContentOffset(contentOffset, animated: false)
     }
 
-    private func contentOrigin(of scrollView: UIScrollView) -> CGPoint {
+    private func contentOffsetForPinning(of scrollView: UIScrollView) -> CGPoint {
         if let vc = viewcontroller, let origin = vc.delegate?.floatingPanel?(vc, contentOffsetForPinning: scrollView) {
             return origin
         }
@@ -965,7 +965,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
         case .top/*, .left */:
             offsetY = value(of: scrollView.fp_contentOffsetMax - scrollView.contentOffset)
         case .bottom/*, .right */:
-            offsetY = value(of: scrollView.contentOffset - contentOrigin(of: scrollView))
+            offsetY = value(of: scrollView.contentOffset - contentOffsetForPinning(of: scrollView))
         }
         return offsetY <= -30.0 || offsetY > 0
     }
