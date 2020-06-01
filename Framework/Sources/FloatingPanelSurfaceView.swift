@@ -108,7 +108,7 @@ public class FloatingPanelSurfaceView: UIView {
     }}
 
     /// The margins to use when laying out the container view wrapping content.
-    public var contentMargins: UIEdgeInsets = .zero { didSet {
+    public var containerMargin: UIEdgeInsets = .zero { didSet {
         setNeedsUpdateConstraints()
     } }
 
@@ -226,21 +226,21 @@ public class FloatingPanelSurfaceView: UIView {
     public override func updateConstraints() {
         switch anchorPosition {
         case .top:
-            containerViewTopConstraint.constant = (contentMargins.top == 0) ? -containerOverflow : -contentMargins.top
-            containerViewLeftConstraint.constant = contentMargins.left
-            containerViewRightConstraint.constant = -contentMargins.right
-            containerViewBottomConstraint.constant = -contentMargins.bottom
+            containerViewTopConstraint.constant = (containerMargin.top == 0) ? -containerOverflow : -containerMargin.top
+            containerViewLeftConstraint.constant = containerMargin.left
+            containerViewRightConstraint.constant = -containerMargin.right
+            containerViewBottomConstraint.constant = -containerMargin.bottom
         case .bottom:
-            containerViewTopConstraint.constant = contentMargins.top
-            containerViewLeftConstraint.constant = contentMargins.left
-            containerViewRightConstraint.constant = -contentMargins.right
-            containerViewBottomConstraint.constant = (contentMargins.bottom == 0) ? containerOverflow : -contentMargins.bottom
+            containerViewTopConstraint.constant = containerMargin.top
+            containerViewLeftConstraint.constant = containerMargin.left
+            containerViewRightConstraint.constant = -containerMargin.right
+            containerViewBottomConstraint.constant = (containerMargin.bottom == 0) ? containerOverflow : -containerMargin.bottom
         }
 
-        contentViewTopConstraint?.constant = contentMargins.top + contentPadding.top
-        contentViewLeftConstraint?.constant = contentMargins.left + contentPadding.left
-        contentViewRightConstraint?.constant = contentMargins.right + contentPadding.right
-        contentViewBottomConstraint?.constant = contentMargins.bottom + contentPadding.bottom
+        contentViewTopConstraint?.constant = containerMargin.top + contentPadding.top
+        contentViewLeftConstraint?.constant = containerMargin.left + contentPadding.left
+        contentViewRightConstraint?.constant = containerMargin.right + contentPadding.right
+        contentViewBottomConstraint?.constant = containerMargin.bottom + contentPadding.bottom
 
         switch anchorPosition {
         case .top:
@@ -272,8 +272,8 @@ public class FloatingPanelSurfaceView: UIView {
     public override var intrinsicContentSize: CGSize {
         let fittingSize = UIView.layoutFittingCompressedSize
         let contentSize = contentView?.systemLayoutSizeFitting(fittingSize) ?? .zero
-        return CGSize(width: contentMargins.horizontalInset + contentPadding.horizontalInset + contentSize.width,
-                      height: contentMargins.verticalInset + contentPadding.verticalInset + contentSize.height)
+        return CGSize(width: containerMargin.horizontalInset + contentPadding.horizontalInset + contentSize.width,
+                      height: containerMargin.verticalInset + contentPadding.verticalInset + contentSize.height)
     }
 
     private func updateShadow() {
@@ -318,7 +318,7 @@ public class FloatingPanelSurfaceView: UIView {
             return
         }
         containerView.layer.masksToBounds = true
-        guard contentMargins.bottom == 0 else { return }
+        guard containerMargin.bottom == 0 else { return }
         if #available(iOS 11, *) {
             // Don't use `contentView.clipToBounds` because it prevents content view from expanding the height of a subview of it
             // for the bottom overflow like Auto Layout settings of UIVisualEffectView in Main.storyboard of Example/Maps.
@@ -346,10 +346,10 @@ public class FloatingPanelSurfaceView: UIView {
         /* contentView.frame = bounds */ // MUST NOT: Because the top safe area inset of a content VC will be incorrect.
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
-        let topConstraint = contentView.topAnchor.constraint(equalTo: topAnchor, constant: contentMargins.top + contentPadding.top)
-        let leftConstraint = contentView.leftAnchor.constraint(equalTo: leftAnchor, constant: contentMargins.left + contentPadding.left)
-        let rightConstraint = rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: contentMargins.right + contentPadding.right)
-        let bottomConstraint = bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: contentMargins.bottom + contentPadding.bottom)
+        let topConstraint = contentView.topAnchor.constraint(equalTo: topAnchor, constant: containerMargin.top + contentPadding.top)
+        let leftConstraint = contentView.leftAnchor.constraint(equalTo: leftAnchor, constant: containerMargin.left + contentPadding.left)
+        let rightConstraint = rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: containerMargin.right + contentPadding.right)
+        let bottomConstraint = bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: containerMargin.bottom + contentPadding.bottom)
         NSLayoutConstraint.activate([
             topConstraint,
             leftConstraint,
