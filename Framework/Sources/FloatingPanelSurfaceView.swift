@@ -170,7 +170,7 @@ public class FloatingPanelSurfaceView: UIView {
     /// The content right constraint
     private var contentViewRightConstraint: NSLayoutConstraint?
     /// The content height constraint
-    private var contentViewHeightConstraint: NSLayoutConstraint?
+    private var contentViewBottomConstraint: NSLayoutConstraint?
 
     private lazy var grabberHandleWidthConstraint = grabber.widthAnchor.constraint(equalToConstant: grabberSize.width)
     private lazy var grabberHandleHeightConstraint = grabber.heightAnchor.constraint(equalToConstant: grabberSize.height)
@@ -241,7 +241,7 @@ public class FloatingPanelSurfaceView: UIView {
         contentViewTopConstraint?.constant = contentMargins.top + contentPadding.top
         contentViewLeftConstraint?.constant = contentMargins.left + contentPadding.left
         contentViewRightConstraint?.constant = contentMargins.right + contentPadding.right
-        contentViewHeightConstraint?.constant = -(contentMargins.top + contentMargins.bottom + contentPadding.top + contentPadding.bottom)
+        contentViewBottomConstraint?.constant = -(contentMargins.top + contentMargins.bottom + contentPadding.top + contentPadding.bottom)
 
         switch anchorPosition {
         case .top:
@@ -350,18 +350,16 @@ public class FloatingPanelSurfaceView: UIView {
         let topConstraint = contentView.topAnchor.constraint(equalTo: topAnchor, constant: contentMargins.top + contentPadding.top)
         let leftConstraint = contentView.leftAnchor.constraint(equalTo: leftAnchor, constant: contentMargins.left + contentPadding.left)
         let rightConstraint = rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: contentMargins.right + contentPadding.right)
-        let heightPadding = contentMargins.top + contentMargins.bottom + contentPadding.top + contentPadding.bottom
-        let heightConstraint = contentView.heightAnchor.constraint(equalTo: heightAnchor, constant: -heightPadding)
-        heightConstraint.priority = UILayoutPriority(999)
+        let bottomConstraint = bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: contentMargins.bottom + contentPadding.bottom)
         NSLayoutConstraint.activate([
             topConstraint,
             leftConstraint,
             rightConstraint,
-            heightConstraint,
-        ])
+            bottomConstraint,
+            ].map { $0.priority = .defaultHigh; return $0; })
         self.contentViewTopConstraint = topConstraint
         self.contentViewLeftConstraint = leftConstraint
         self.contentViewRightConstraint = rightConstraint
-        self.contentViewHeightConstraint = heightConstraint
+        self.contentViewBottomConstraint = bottomConstraint
     }
 }
