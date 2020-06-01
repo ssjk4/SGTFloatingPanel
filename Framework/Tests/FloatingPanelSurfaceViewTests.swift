@@ -121,25 +121,51 @@ class FloatingPanelSurfaceViewTests: XCTestCase {
     }
 
     func test_surfaceView_contentMargins() {
-        let surface = FloatingPanelSurfaceView(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0))
-        surface.layoutIfNeeded()
-        XCTAssertEqual(surface.containerView.frame, surface.bounds)
-        surface.containerMargin = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
-        surface.setNeedsLayout()
-        surface.layoutIfNeeded()
-        XCTAssertEqual(surface.containerView.frame, surface.bounds.inset(by: surface.containerMargin))
+        XCTContext.runActivity(named: "Top sheet") { _ in
+            let surface = FloatingPanelSurfaceView(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0))
+            surface.anchorPosition = .top
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.containerView.frame, surface.bounds)
+            surface.containerMargin = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
+            surface.setNeedsLayout()
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.containerView.frame, surface.bounds.inset(by: surface.containerMargin))
+        }
+        XCTContext.runActivity(named: "Bottom sheet") { _ in
+            let surface = FloatingPanelSurfaceView(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0))
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.containerView.frame, surface.bounds)
+            surface.containerMargin = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
+            surface.setNeedsLayout()
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.containerView.frame, surface.bounds.inset(by: surface.containerMargin))
+        }
     }
 
     func test_surfaceView_contentInsets() {
-        let surface = FloatingPanelSurfaceView(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0))
-        let contentView = UIView()
-        surface.set(contentView: contentView)
-        surface.layoutIfNeeded()
-        XCTAssertEqual(surface.contentView.frame, surface.bounds)
-        surface.contentPadding = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
-        surface.setNeedsLayout()
-        surface.layoutIfNeeded()
-        XCTAssertEqual(surface.contentView.frame, surface.bounds.inset(by: surface.contentPadding))
+        XCTContext.runActivity(named: "Top sheet") { _ in
+            let surface = FloatingPanelSurfaceView(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0))
+            surface.anchorPosition = .top
+            let contentView = UIView()
+            surface.set(contentView: contentView)
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.contentView.frame, surface.bounds)
+            surface.contentPadding = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
+            surface.setNeedsLayout()
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.contentView.frame, surface.bounds.inset(by: surface.contentPadding))
+        }
+        XCTContext.runActivity(named: "Bottom sheet") { _ in
+            let surface = FloatingPanelSurfaceView(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0))
+            let contentView = UIView()
+            surface.set(contentView: contentView)
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.contentView.frame, surface.bounds)
+            surface.contentPadding = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
+            surface.setNeedsLayout()
+            surface.layoutIfNeeded()
+            XCTAssertEqual(surface.contentView.frame, surface.bounds.inset(by: surface.contentPadding))
+        }
     }
 
     func test_surfaceView_containerMargins_and_contentInsets() {

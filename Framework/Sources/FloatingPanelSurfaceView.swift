@@ -226,7 +226,7 @@ public class FloatingPanelSurfaceView: UIView {
     public override func updateConstraints() {
         switch anchorPosition {
         case .top:
-            containerViewTopConstraint.constant = (containerMargin.top == 0) ? -containerOverflow : -containerMargin.top
+            containerViewTopConstraint.constant = (containerMargin.top == 0) ? -containerOverflow : containerMargin.top
             containerViewLeftConstraint.constant = containerMargin.left
             containerViewRightConstraint.constant = -containerMargin.right
             containerViewBottomConstraint.constant = -containerMargin.bottom
