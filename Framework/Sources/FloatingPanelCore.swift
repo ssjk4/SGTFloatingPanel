@@ -839,10 +839,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
     }
 
     func value(of point: CGPoint) -> CGFloat {
-       switch layoutAdapter.layout.anchorPosition {
-       case .top, .bottom: return point.y
-       //case .left, .right: return point.x
-       }
+        return layoutAdapter.layout.anchorPosition.mainLocation(point)
     }
 
     // Distance travelled after decelerating to zero velocity at a constant rate.

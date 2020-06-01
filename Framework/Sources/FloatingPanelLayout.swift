@@ -28,6 +28,21 @@ extension FloatingPanelLayoutReferenceGuide {
     //case right
 }
 
+extension FloatingPanelPosition {
+    func mainLocation(_ point: CGPoint) -> CGFloat {
+        switch self {
+        case .top, .bottom: return point.y
+        //case .left, .right: return point.x
+        }
+    }
+
+    func mainDimension(_ size: CGSize) -> CGFloat {
+        switch self {
+        case .top, .bottom: return size.height
+        }
+    }
+}
+
 @objc public enum FloatingPanelReferenceEdge: Int {
     case top
     //case left
@@ -387,8 +402,8 @@ class FloatingPanelLayoutAdapter {
         }
         switch anchor {
         case let ianchor as FloatingPanelIntrinsicLayoutAnchor:
-            let referenceBoundsLength = mainDimension(referenceBounds.size)
-            let surfaceIntrinsicLength = mainDimension(surfaceView.intrinsicContentSize)
+            let referenceBoundsLength = layout.anchorPosition.mainDimension(referenceBounds.size)
+            let surfaceIntrinsicLength = layout.anchorPosition.mainDimension(surfaceView.intrinsicContentSize)
             let diff = ianchor.isAbsolute ? ianchor.offset : surfaceIntrinsicLength * ianchor.offset
             switch layout.anchorPosition {
             case .top:
@@ -397,7 +412,7 @@ class FloatingPanelLayoutAdapter {
                 return referenceBoundsLength - surfaceIntrinsicLength + diff
             }
         case let anchor as FloatingPanelLayoutAnchor:
-            let diff = anchor.isAbsolute ? anchor.inset : mainDimension(referenceBounds.size) * anchor.inset
+            let diff = anchor.isAbsolute ? anchor.inset : layout.anchorPosition.mainDimension(referenceBounds.size) * anchor.inset
             switch anchor.referenceEdge {
             case .top:
                 return referenceBounds.minY + diff
@@ -415,13 +430,6 @@ class FloatingPanelLayoutAdapter {
             return frame.maxY
         case .bottom:
             return frame.minY
-        }
-    }
-
-    func mainDimension(_ size: CGSize) -> CGFloat {
-        switch layout.anchorPosition {
-        case .top, .bottom:
-            return size.height
         }
     }
 
