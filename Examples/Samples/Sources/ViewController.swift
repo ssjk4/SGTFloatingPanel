@@ -399,7 +399,7 @@ extension SampleListViewController: UITableViewDelegate {
             fpc.surfaceView.appearance = appearance
 
             fpc.surfaceView.backgroundColor = .red
-            fpc.surfaceView.contentMargins = .init(top: 24.0, left: 8.0, bottom: layoutInsets.bottom, right: 8.0)
+            fpc.surfaceView.containerMargin = .init(top: 24.0, left: 8.0, bottom: layoutInsets.bottom, right: 8.0)
             #if swift(>=5.1) // Actually Xcode 11 or later
             if #available(iOS 13.0, *) {
                 fpc.surfaceView.layer.cornerCurve = .continuous
@@ -1269,7 +1269,7 @@ final class MultiPanelController: FloatingPanelController, FloatingPanelControll
             ]
             set(contentViewController: navigationController)
             self.track(scrollView: vc.tableView)
-            surfaceView.contentMargins = .init(top: 24.0, left: 0.0, bottom: layoutInsets.bottom, right: 0.0)
+            surfaceView.containerMargin = .init(top: 24.0, left: 0.0, bottom: layoutInsets.bottom, right: 0.0)
         }
     }
 
