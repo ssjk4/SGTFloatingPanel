@@ -132,18 +132,15 @@ public class FloatingPanelSurfaceView: UIView {
     var anchorPosition: FloatingPanelPosition = .bottom {
         didSet {
             guard anchorPosition != oldValue else { return }
-            NSLayoutConstraint.deactivate([containerViewEdgeConstraint,
-                                           grabberHandleEdgePaddingConstraint])
+            NSLayoutConstraint.deactivate([grabberHandleEdgePaddingConstraint])
             switch anchorPosition {
             case .top:
-                containerViewEdgeConstraint = containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -contentMargins.bottom)
                 grabberHandleEdgePaddingConstraint = grabber.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -grabberEdgePadding)
             case .bottom:
-                containerViewEdgeConstraint = containerView.topAnchor.constraint(equalTo: topAnchor, constant: contentMargins.top)
                 grabberHandleEdgePaddingConstraint = grabber.topAnchor.constraint(equalTo: topAnchor, constant: grabberEdgePadding)
             }
-            NSLayoutConstraint.activate([containerViewEdgeConstraint,
-                                         grabberHandleEdgePaddingConstraint])
+            NSLayoutConstraint.activate([grabberHandleEdgePaddingConstraint])
+            setNeedsUpdateConstraints()
         }
     }
 
@@ -158,9 +155,9 @@ public class FloatingPanelSurfaceView: UIView {
         }
     }
 
-    private lazy var containerViewEdgeConstraint = containerView.topAnchor.constraint(equalTo: topAnchor, constant: contentMargins.top)
-    private lazy var containerViewHeightConstraint = containerView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1.0)
+    private lazy var containerViewTopConstraint = containerView.topAnchor.constraint(equalTo: topAnchor, constant: 0.0)
     private lazy var containerViewLeftConstraint = containerView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0.0)
+    private lazy var containerViewBottomConstraint = containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0)
     private lazy var containerViewRightConstraint = containerView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0.0)
 
     /// The content view top constraint
@@ -208,10 +205,10 @@ public class FloatingPanelSurfaceView: UIView {
         addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            containerViewEdgeConstraint,
+            containerViewTopConstraint,
             containerViewLeftConstraint,
+            containerViewBottomConstraint,
             containerViewRightConstraint,
-            containerViewHeightConstraint,
         ])
 
         addSubview(grabber)
@@ -229,19 +226,21 @@ public class FloatingPanelSurfaceView: UIView {
     public override func updateConstraints() {
         switch anchorPosition {
         case .top:
-            containerViewEdgeConstraint.constant = contentMargins.bottom
-            containerViewHeightConstraint.constant = (contentMargins.top == 0) ? containerOverflow : -(contentMargins.top + contentMargins.bottom)
+            containerViewTopConstraint.constant = (contentMargins.top == 0) ? -containerOverflow : -contentMargins.top
+            containerViewLeftConstraint.constant = contentMargins.left
+            containerViewRightConstraint.constant = -contentMargins.right
+            containerViewBottomConstraint.constant = -contentMargins.bottom
         case .bottom:
-            containerViewEdgeConstraint.constant = contentMargins.top
-            containerViewHeightConstraint.constant = (contentMargins.bottom == 0) ? containerOverflow : -(contentMargins.top + contentMargins.bottom)
+            containerViewTopConstraint.constant = contentMargins.top
+            containerViewLeftConstraint.constant = contentMargins.left
+            containerViewRightConstraint.constant = -contentMargins.right
+            containerViewBottomConstraint.constant = (contentMargins.bottom == 0) ? containerOverflow : -contentMargins.bottom
         }
-        containerViewLeftConstraint.constant = contentMargins.left
-        containerViewRightConstraint.constant = -contentMargins.right
 
         contentViewTopConstraint?.constant = contentMargins.top + contentPadding.top
         contentViewLeftConstraint?.constant = contentMargins.left + contentPadding.left
         contentViewRightConstraint?.constant = contentMargins.right + contentPadding.right
-        contentViewBottomConstraint?.constant = -(contentMargins.top + contentMargins.bottom + contentPadding.top + contentPadding.bottom)
+        contentViewBottomConstraint?.constant = contentMargins.bottom + contentPadding.bottom
 
         switch anchorPosition {
         case .top:
