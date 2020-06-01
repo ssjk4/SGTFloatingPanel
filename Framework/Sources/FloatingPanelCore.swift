@@ -351,7 +351,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
                     lockScrollView()
                 } else {
                     if state == layoutAdapter.edgeMostState, self.animator == nil {
-                        switch layoutAdapter.layout.anchorPosition {
+                        switch layoutAdapter.anchorPosition {
                         case .top/*, .left */:
                             if offsetDiff < 0 && velocity > 0 {
                                 unlockScrollView()
@@ -366,7 +366,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
             } else {
                 if interactionInProgress {
                     // Show a scroll indicator at the top in dragging.
-                    switch layoutAdapter.layout.anchorPosition {
+                    switch layoutAdapter.anchorPosition {
                     case .top/*, .left */:
                         if offsetDiff <= 0 && velocity >= 0 {
                             unlockScrollView()
@@ -386,7 +386,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
                     }
                 } else {
                     if state == layoutAdapter.edgeMostState {
-                        switch layoutAdapter.layout.anchorPosition {
+                        switch layoutAdapter.anchorPosition {
                         case .top/*, .left */:
                             if velocity < 0, !allowScrollPanGesture(for: scrollView) {
                                 lockScrollView()
@@ -524,7 +524,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
         let offset = value(of: scrollView.contentOffset - contentOffsetForPinning(of: scrollView))
         // The zero offset must be excluded because the offset is usually zero
         // after a panel moves from half/tip to full.
-        switch layoutAdapter.layout.anchorPosition {
+        switch layoutAdapter.anchorPosition {
         case .top/*, .right */:
             if  offset < 0.0 {
                 return true
@@ -590,7 +590,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
 
     private func shouldOverflow(from pre: CGFloat, to next: CGFloat) -> Bool {
         if let scrollView = scrollView, scrollView.panGestureRecognizer.state == .changed {
-            switch layoutAdapter.layout.anchorPosition {
+            switch layoutAdapter.anchorPosition {
             case .top/*, .left */:
                 if pre > .zero, pre < next {
                     return false
@@ -717,7 +717,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
             } else {
                 initialScrollOffset = contentOffsetForPinning(of: scrollView)
                 let offsetDiff = scrollView.contentOffset - contentOffsetForPinning(of: scrollView)
-                switch layoutAdapter.layout.anchorPosition {
+                switch layoutAdapter.anchorPosition {
                 case .top/*, .left */:
                     // Fit the surface bounds to a scroll offset content by startInteraction(at:offset:)
                     if value(of: offsetDiff) > 0 {
@@ -839,7 +839,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
     }
 
     func value(of point: CGPoint) -> CGFloat {
-        return layoutAdapter.layout.anchorPosition.mainLocation(point)
+        return layoutAdapter.anchorPosition.mainLocation(point)
     }
 
     // Distance travelled after decelerating to zero velocity at a constant rate.
@@ -939,7 +939,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
         if let vc = viewcontroller, let origin = vc.delegate?.floatingPanel?(vc, contentOffsetForPinning: scrollView) {
             return origin
         }
-        switch layoutAdapter.layout.anchorPosition {
+        switch layoutAdapter.anchorPosition {
         case .top:
             return CGPoint(x: 0.0, y: scrollView.fp_contentOffsetMax.y)
         /*
@@ -958,7 +958,7 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
     private func allowScrollPanGesture(for scrollView: UIScrollView) -> Bool {
         guard state == layoutAdapter.edgeMostState else { return false }
         var offsetY: CGFloat = 0
-        switch layoutAdapter.layout.anchorPosition {
+        switch layoutAdapter.anchorPosition {
         case .top/*, .left */:
             offsetY = value(of: scrollView.fp_contentOffsetMax - scrollView.contentOffset)
         case .bottom/*, .right */:

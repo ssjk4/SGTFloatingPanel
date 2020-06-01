@@ -204,7 +204,7 @@ class FloatingPanelLayoutAdapter {
     private weak var backdropView: FloatingPanelBackdropView!
     private let defaultLayout = FloatingPanelBottomLayout()
 
-    var layout: FloatingPanelLayout {
+    fileprivate var layout: FloatingPanelLayout {
         didSet {
             surfaceView.anchorPosition = layout.anchorPosition
         }
@@ -230,6 +230,14 @@ class FloatingPanelLayoutAdapter {
 
     private var activeStates: Set<FloatingPanelState> {
         return Set(layout.stateAnchors.keys)
+    }
+
+    var initialState: FloatingPanelState {
+        layout.initialState
+    }
+
+    var anchorPosition: FloatingPanelPosition {
+        layout.anchorPosition
     }
 
     var orderedStates: [FloatingPanelState] {
@@ -756,7 +764,9 @@ class FloatingPanelLayoutAdapter {
         assert(sortedDirectionalStates == statePosOrder,
                "Check your layout anchors because the state order(\(statePosOrder)) must be (\(sortedDirectionalStates))).")
     }
+}
 
+extension FloatingPanelLayoutAdapter {
     func segument(at pos: CGFloat, forward: Bool) -> LayoutSegment {
         /// ----------------------->Y
         /// --> forward                <-- backward
@@ -782,5 +792,12 @@ class FloatingPanelLayoutAdapter {
         default:
             return LayoutSegment(lower: sortedStates[sortedStates.endIndex - 1], upper: nil)
         }
+    }
+}
+
+extension FloatingPanelController {
+    var _layout: FloatingPanelLayout {
+        get { floatingPanel.layoutAdapter.layout }
+        set { floatingPanel.layoutAdapter.layout = newValue}
     }
 }

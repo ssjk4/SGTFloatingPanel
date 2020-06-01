@@ -209,9 +209,9 @@ open class FloatingPanelController: UIViewController {
     /// The layout object managed by the controller
     @objc
     public var layout: FloatingPanelLayout {
-        get { floatingPanel.layoutAdapter.layout }
+        get { _layout }
         set {
-            floatingPanel.layoutAdapter.layout = newValue
+            _layout = newValue
             if let parent = parent, let layout = newValue as? UIViewController, layout == parent {
                 log.warning("A memory leak will occur by a retain cycle because \(self) owns the parent view controller(\(parent)) as the layout object. Don't let the parent adopt FloatingPanelLayout.")
             }
@@ -314,7 +314,7 @@ open class FloatingPanelController: UIViewController {
 
     private func didUpdateDelegate(){
         if let layout = delegate?.floatingPanel?(self, layoutFor: traitCollection) {
-            floatingPanel.layoutAdapter.layout = layout
+            _layout = layout
         }
     }
 
@@ -486,7 +486,7 @@ open class FloatingPanelController: UIViewController {
             // Instead, update(safeAreaInsets:) is called at `viewDidLayoutSubviews()`
         }
 
-        move(to: floatingPanel.layoutAdapter.layout.initialState,
+        move(to: floatingPanel.layoutAdapter.initialState,
              animated: animated,
              completion: completion)
     }
