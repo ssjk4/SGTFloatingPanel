@@ -318,7 +318,12 @@ public class FloatingPanelSurfaceView: UIView {
             return
         }
         containerView.layer.masksToBounds = true
-        guard containerMargin.bottom == 0 else { return }
+        switch anchorPosition {
+        case .top:
+            if containerMargin.top == 0 { return }
+        case .bottom:
+            if containerMargin.bottom == 0 { return }
+        }
         if #available(iOS 11, *) {
             // Don't use `contentView.clipToBounds` because it prevents content view from expanding the height of a subview of it
             // for the bottom overflow like Auto Layout settings of UIVisualEffectView in Main.storyboard of Example/Maps.
