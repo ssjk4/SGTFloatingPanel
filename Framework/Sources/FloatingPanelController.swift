@@ -338,11 +338,12 @@ open class FloatingPanelController: UIViewController {
 
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if #available(iOS 11.0, *) {}
-        else {
+        if #available(iOS 11.0, *) {
+            // Ensure the panel height after rotating a device
+            floatingPanel.layoutAdapter.updateHeight()
+        } else {
             // Because {top,bottom}LayoutGuide is managed as a view
-            if preSafeAreaInsets != fp_safeAreaInsets,
-                floatingPanel.isDecelerating == false {
+            if floatingPanel.isDecelerating == false {
                 self.update(safeAreaInsets: fp_safeAreaInsets)
             }
         }
