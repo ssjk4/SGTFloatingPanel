@@ -72,14 +72,8 @@ public class FloatingPanelSurfaceView: UIView {
         setNeedsUpdateConstraints()
     } }
 
-    /// The size of the grabbable area from the edge
-    public lazy var grabbableAreaSize: CGSize = {
-        switch anchorPosition {
-        case .top, .bottom:
-            let height = grabberEdgePadding * 2 + grabberSize.height
-            return CGSize(width: bounds.width, height: height)
-        }
-    }()
+    /// The distance from the interactive edge which prevents the conetent scroll
+    public var grabberAreaDimension: CGFloat = 36.0
 
     /// The grabber size
     public var grabberSize: CGSize = CGSize(width: 36.0, height: 5.0) { didSet {
@@ -144,14 +138,14 @@ public class FloatingPanelSurfaceView: UIView {
         }
     }
 
-    var grabbableAreaFrame: CGRect {
+    var grabberAreaFrame: CGRect {
         switch anchorPosition {
         case .top:
-            return CGRect(origin: CGPoint(x: bounds.minX, y: bounds.maxY - grabbableAreaSize.height),
-                          size: grabbableAreaSize)
+            return CGRect(origin: CGPoint(x: bounds.minX, y: bounds.maxY - grabberAreaDimension),
+                          size: CGSize(width: bounds.width, height: grabberAreaDimension))
         case .bottom:
             return CGRect(origin: CGPoint(x: bounds.minX, y: bounds.minY),
-                          size: grabbableAreaSize)
+                          size: CGSize(width: bounds.width, height: grabberAreaDimension))
         }
     }
 

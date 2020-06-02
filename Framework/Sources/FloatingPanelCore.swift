@@ -40,7 +40,9 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
 
     private var initialSurfaceLocation: CGPoint = .zero
     private var initialTranslation: CGPoint = .zero
-    private var initialLocation: CGPoint = .nan
+    private var initialLocation: CGPoint {
+        return panGestureRecognizer.initialLocation
+    }
 
     var interactionInProgress: Bool = false
     var isDecelerating: Bool = false
@@ -50,6 +52,9 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
     private var stopScrollDeceleration: Bool = false
     private var scrollBouncable = false
     private var scrollIndictorVisible = false
+    private var grabberAreaFrame: CGRect {
+        return surfaceView.grabberAreaFrame
+    }
 
     // MARK: - Interface
 
@@ -297,10 +302,6 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
             // Should begin the pan gesture without waiting tap/long press gestures fail
             return false
         }
-    }
-
-    var grabberAreaFrame: CGRect {
-        return surfaceView.grabbableAreaFrame
     }
 
     // MARK: - Gesture handling
@@ -553,7 +554,6 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
         // because it can be recognized in scrolling a content in a content view controller.
         // So here just preserve the current state if needed.
         log.debug("panningBegan -- location = \(value(of: location))")
-        initialLocation = location
 
         guard let scrollView = scrollView else { return }
         if state == layoutAdapter.edgeMostState {
@@ -970,8 +970,10 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
 
 class FloatingPanelPanGestureRecognizer: UIPanGestureRecognizer {
     fileprivate weak var floatingPanel: FloatingPanelCore?
+    fileprivate var initialLocation: CGPoint = .zero
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
+        initialLocation = touches.first?.location(in: view) ?? .zero
         if floatingPanel?.animator != nil || floatingPanel?.moveAnimator != nil {
             self.state = .began
         }
