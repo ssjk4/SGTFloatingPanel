@@ -927,7 +927,7 @@ class ModalViewController: UIViewController, FloatingPanelControllerDelegate {
     @IBAction func updateLayout(_ sender: Any) {
         isNewlayout = !isNewlayout
         UIView.animate(withDuration: 0.5) {
-            self.fpc.updateLayout()
+            self.fpc.invalidateLayout()
         }
     }
 
@@ -1019,7 +1019,7 @@ class TabBarContentViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fpc.updateLayout()
+        fpc.invalidateLayout()
     }
 
     // MARK: - Action
@@ -1345,7 +1345,7 @@ final class MultiPanelController: FloatingPanelController, FloatingPanelControll
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        delegate = self
+        layout = FirstViewLayout()
         isRemovalInteractionEnabled = true
 
         let vc = FirstPanelContentViewController()
@@ -1354,17 +1354,12 @@ final class MultiPanelController: FloatingPanelController, FloatingPanelControll
     }
 
     private final class FirstViewLayout: FloatingPanelLayout {
-        let initialPosition: FloatingPanelPosition = .full
-        let supportedPositions: Set<FloatingPanelPosition> = [.full]
-        func insetFor(position: FloatingPanelPosition) -> CGFloat? {
-            switch position {
-            case .full: return 40.0
-            default: return nil
-            }
+        let position: FloatingPanelPosition = .bottom
+        let initialState: FloatingPanelState = .full
+        var layoutAnchors: [FloatingPanelState : FloatingPanelLayoutAnchoring] {
+            return [
+                .full: FloatingPanelLayoutAnchor(absoluteInset: 40.0, edge: .top, referenceGuide: .superview)
+            ]
         }
-    }
-
-    func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
-        return FirstViewLayout()
     }
 }
