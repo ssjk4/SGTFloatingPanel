@@ -251,7 +251,11 @@ class FloatingPanelCore: NSObject, UIGestureRecognizerDelegate {
                     if grabberAreaFrame.contains(gestureRecognizer.location(in: gestureRecognizer.view)) {
                         return false
                     }
-                    return allowScrollPanGesture(for: scrollView)
+                    return false;
+                    //当topMostState时 && scroll veiw contentoffset > 0，在scroll下拉滚动到contentoffset为0时，需要触发panel被下拉
+                    //所以不能用allowScrollPanGesture方法，以上情况allowScrollPanGesture返回true，会禁止panel的pan手势识别，从而没有连贯的scroll下拉转panel下拉的操作
+                    //所以直接返回false，默认不禁止panel的pan手势
+                    //return allowScrollPanGesture(for: scrollView)
                 default:
                     return false
                 }
